@@ -1,4 +1,10 @@
 buildscript {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        google()
+        mavenCentral()
+    }
     ext.kotlin_version = '2.2.10'
     dependencies {
         classpath 'com.android.tools.build:gradle:9.0.0'

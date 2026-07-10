@@ -86,15 +86,22 @@ class SubscriberService : Service() {
             initializeForegroundState()
         }
 
-        if (intent != null) {
-            Log.d(TAG, "using an intent with action ${intent.action}")
-            when (intent.action) {
-                Action.START.name -> startService()
-                Action.STOP.name -> stopService()
-                else -> Log.w(TAG, "This should never happen. No action in the received intent")
+        when (val action = intent?.action) {
+            Action.START.name -> {
+                Log.d(TAG, "Starting subscriber service from explicit START action")
+                startService()
             }
-        } else {
-            Log.d(TAG, "with a null intent. It has been probably restarted by the system.")
+            Action.STOP.name -> {
+                Log.d(TAG, "Stopping subscriber service from explicit STOP action")
+                stopService()
+            }
+            null -> {
+                Log.d(TAG, "No action in start intent; assuming START_STICKY system restart and restoring subscriptions")
+                startService()
+            }
+            else -> {
+                Log.w(TAG, "Ignoring unknown subscriber service action: $action")
+            }
         }
         return START_STICKY // restart if system kills the service
     }
